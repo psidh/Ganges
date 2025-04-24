@@ -1,0 +1,36 @@
+# Ignore binary executables
+/bin/
+/obj/
+
+# Go build and cache files
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Vendor directory
+/vendor/
+
+# Go workspace
+go.work
+go.work.sum
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# IDEs
+.idea/
+.vscode/
+*.iml
+
+# Go test coverage
+*.cov
+
+# Go debug files
+*.log
+
+src/src

@@ -1,0 +1,10 @@
+# .air.toml
+[build]
+  cmd = "go run ./src"
+  bin = "./src/src"  # Ensure it's relative to your current directory
+  exclude_dir = ["tmp", ".git", "vendor"]
+
+[watch]
+  dirs = ["src"]
+  exclude_dirs = ["tmp", ".git", "vendor"]
+
