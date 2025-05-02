@@ -26,7 +26,7 @@ func main() {
 	user, err := user.Current()
 
 	if err != nil {
-		fmt.Printf("Error : ", err)
+		fmt.Println("Error : ", err)
 		panic(err)
 	}
 
