@@ -11,9 +11,9 @@ import (
 func TestLetStatements(t *testing.T) {
 	println("HIn there")
 
-	input := `let x  5;
-	let  = 10;
-	let  1008;`
+	input := `let x = 5;
+	let y = 10;
+	let foobar = 1008;`
 
 	l := lexer.New(input)
 	p := New(l)
@@ -47,6 +47,35 @@ func TestLetStatements(t *testing.T) {
 			return
 		}
 	}
+}
+
+func TestReturnStatements(t *testing.T) {
+	input := `daan 7;`
+
+	l := lexer.New(input)
+	p := New(l)
+
+	program := p.ParseProgram()
+	checkParserErrors(t, p)
+
+	if len(program.Statements) != 1 {
+		t.Fatalf("program.Statements should contain 1 statements instead got=%d", len(program.Statements))
+	}
+
+	for _, stmt := range program.Statements {
+		returnStmt, ok := stmt.(*ast.ReturnStatement)
+
+		if !ok {
+			t.Errorf("stmt not *ast.returnStatement. got=%T", stmt)
+			continue
+		}
+
+		if returnStmt.TokenLiteral() != "daan" {
+			t.Errorf("returnStmt.TokenLiteral not 'daan' got %q", returnStmt.TokenLiteral())
+		}
+
+	}
+
 }
 
 func checkParserErrors(t *testing.T, p *Parser) {
