@@ -9,15 +9,24 @@ import (
 )
 
 type Parser struct {
-	l         *lexer.Lexer
-	currToken token.Token
-	peekToken token.Token
-	errors    []string
+	l              *lexer.Lexer
+	currToken      token.Token
+	peekToken      token.Token
+	errors         []string
+	prefixParseFns map[token.TokenType]prefixParseFn
+	infixParseFns  map[token.TokenType]infixParseFn
 }
+
+type (
+	prefixParseFn func() ast.Expression
+	infixParseFn  func(ast.Expression) ast.Expression // the argument is the left side of the expression because this is a infix expression
+)
 
 func New(l *lexer.Lexer) *Parser {
 	p := &Parser{l: l, errors: []string{}}
 
+	p.prefixParseFns = make(map[token.TokenType]prefixParseFn)
+	p.registerPrefix(token.IDENT, p.parseIdentifier)
 	p.nextToken()
 	p.nextToken()
 	return p
@@ -36,6 +45,7 @@ func (p *Parser) nextToken() {
 	p.currToken = p.peekToken
 	p.peekToken = p.l.NextToken()
 }
+
 func (p *Parser) ParseProgram() *ast.Program {
 	program := &ast.Program{}
 
@@ -58,8 +68,28 @@ func (p *Parser) parseStatement() ast.Statement {
 	case token.DAAN:
 		return p.parseReturnStatement()
 	default:
+		return p.parseExpressionStatement()
+	}
+}
+
+func (p *Parser) parseExpressionStatement() *ast.ExpressionStatement {
+	stmt := &ast.ExpressionStatement{Token: p.currToken}
+
+	stmt.Expression = p.parseExpression(LOWEST)
+
+	if p.peekTokenIs(token.SEMICOLON) {
+		p.nextToken()
+	}
+	return stmt
+}
+
+func (p *Parser) parseExpression(precedence int) ast.Expression {
+	prefix := p.prefixParseFns[p.currToken.Type]
+	if prefix == nil {
 		return nil
 	}
+	leftExp := prefix()
+	return leftExp
 }
 
 func (p *Parser) parseLetStatement() *ast.LetStatement {
@@ -107,3 +137,27 @@ func (p *Parser) expectPeek(t token.TokenType) bool {
 		return false
 	}
 }
+
+func (p *Parser) registerPrefix(tokenType token.TokenType, fn prefixParseFn) {
+	p.prefixParseFns[tokenType] = fn
+
+}
+
+func (p *Parser) registerInfix(tokenType token.TokenType, fn infixParseFn) {
+	p.infixParseFns[tokenType] = fn
+}
+
+func (p *Parser) parseIdentifier() ast.Expression {
+	return &ast.Identifier{Token: p.currToken, Value: p.currToken.Literal}
+}
+
+const (
+	_ int = iota
+	LOWEST
+	EQUALS
+	LESSGREATER
+	SUM
+	PRODUCT
+	PREFIX
+	CALL
+)
