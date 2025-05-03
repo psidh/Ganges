@@ -27,6 +27,9 @@ Thumbs.db
 .vscode/
 *.iml
 
+temp/*
+temp/**
+
 # Go test coverage
 *.cov
 
