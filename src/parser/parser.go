@@ -43,6 +43,8 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerPrefix(token.INT, p.parseIntegerLiteral)
 	p.registerPrefix(token.BANG, p.parsePrefixExpression)
 	p.registerPrefix(token.MINUS, p.parsePrefixExpression)
+	p.registerPrefix(token.SATYA, p.parseBoolean)
+	p.registerPrefix(token.ASATYA, p.parseBoolean)
 	p.infixParseFns = make(map[token.TokenType]infixParseFn)
 	p.registerInfix(token.PLUS, p.parseInfixExpression)
 	p.registerInfix(token.MINUS, p.parseInfixExpression)
@@ -98,7 +100,7 @@ func (p *Parser) parseStatement() ast.Statement {
 }
 
 func (p *Parser) parseExpressionStatement() *ast.ExpressionStatement {
-	stmt := &ast.ExpressionStatement{Token: p.currToken}
+	var stmt *ast.ExpressionStatement = &ast.ExpressionStatement{Token: p.currToken}
 
 	stmt.Expression = p.parseExpression(LOWEST)
 
@@ -109,21 +111,21 @@ func (p *Parser) parseExpressionStatement() *ast.ExpressionStatement {
 }
 
 func (p *Parser) parseExpression(precedence int) ast.Expression {
-	prefix := p.prefixParseFns[p.currToken.Type]
-	if prefix == nil {
+	prefixFunction := p.prefixParseFns[p.currToken.Type]
+	if prefixFunction == nil {
 		p.noPrefixParseFnError(p.currToken.Type)
 		return nil
 	}
 
-	leftExp := prefix()
+	var leftExp ast.Expression = prefixFunction()
 
 	for !p.peekTokenIs(token.SEMICOLON) && precedence < p.peekPrecedence() {
-		infix := p.infixParseFns[p.peekToken.Type]
-		if infix == nil {
+		infixFunction := p.infixParseFns[p.peekToken.Type]
+		if infixFunction == nil {
 			return leftExp
 		}
 		p.nextToken()
-		leftExp = infix(leftExp)
+		leftExp = infixFunction(leftExp)
 	}
 
 	return leftExp
@@ -247,6 +249,10 @@ func (p *Parser) currPrecedence() int {
 		return p
 	}
 	return LOWEST
+}
+
+func (p *Parser) parseBoolean() ast.Expression {
+	return &ast.Boolean{Token: p.currToken, Value: p.currTokenIs(token.SATYA)}
 }
 
 const (

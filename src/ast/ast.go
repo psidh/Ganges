@@ -60,6 +60,11 @@ type ReturnStatement struct {
 	ReturnValue Expression
 }
 
+type Boolean struct {
+	Token token.Token
+	Value bool
+}
+
 type ExpressionStatement struct {
 	Token      token.Token
 	Expression Expression
@@ -92,6 +97,10 @@ func (i *Identifier) String() string       { return i.Value }
 
 func (rs *ReturnStatement) statementNode()       {}
 func (rs *ReturnStatement) TokenLiteral() string { return rs.Token.Literal }
+
+func (b *Boolean) expressionNode()      {}
+func (b *Boolean) TokenLiteral() string { return b.Token.Literal }
+func (b *Boolean) String() string       { return b.Token.Literal }
 
 func (es *ExpressionStatement) statementNode()       {}
 func (es *ExpressionStatement) TokenLiteral() string { return es.Token.Literal }
