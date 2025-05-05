@@ -2,6 +2,7 @@ package ast
 
 import (
 	"bytes"
+	"strings"
 
 	"github.com/psidh/Ganges/src/token"
 )
@@ -74,6 +75,11 @@ type IfExpression struct {
 	Condition   Expression
 	Consequence *BlockStatement
 	Alternative *BlockStatement
+}
+type FunctionLiteral struct {
+	Token      token.Token
+	Parameters []*Identifier
+	Body       *BlockStatement
 }
 type ExpressionStatement struct {
 	Token      token.Token
@@ -168,6 +174,25 @@ func (bs *BlockStatement) String() string {
 	for _, s := range bs.Statements {
 		out.WriteString(s.String())
 	}
+	return out.String()
+}
+
+func (fn *FunctionLiteral) expressionNode()      {}
+func (fn *FunctionLiteral) TokenLiteral() string { return fn.Token.Literal }
+func (fn *FunctionLiteral) String() string {
+	var out bytes.Buffer
+
+	params := []string{}
+
+	for _, p := range fn.Parameters {
+		params = append(params, p.String())
+	}
+
+	out.WriteString(fn.TokenLiteral())
+	out.WriteString("(")
+	out.WriteString(strings.Join(params, ", "))
+	out.WriteString(")")
+	out.WriteString(fn.Body.String())
 	return out.String()
 }
 
