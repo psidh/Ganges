@@ -10,7 +10,7 @@ import (
 	"github.com/psidh/Ganges/src/parser"
 )
 
-const PROMPT = "वदः >>"
+const PROMPT = "वदः >> "
 
 func Start(in io.Reader, out io.Writer) {
 	scanner := bufio.NewScanner(in)
