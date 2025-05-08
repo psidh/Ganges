@@ -130,23 +130,23 @@ func TestIfElseExpressions(t *testing.T) {
 		input    string
 		expected interface{}
 	}{
-		{"if (satya) { 10 }", 10},
-		{"if (false) { 10 }", nil},
-		{"if (1) { 10 }", 10},
-		{"if (1 < 2) { 10 }", 10},
-		{"if (1 > 2) { 10 }", nil},
-		{"if (1 > 2) { 10 } else { 20 }", 20},
-		{"if (1 < 2) { 10 } else { 20 }", 10},
+		{"yadi (satya) { 10 }", 10},
+		{"yadi (asatya) { 10 }", nil},
+		{"yadi (1) { 10 }", 10},
+		{"yadi (1 < 2) { 10 }", 10},
+		{"yadi (1 > 2) { 10 }", nil},
+		{"yadi (1 > 2) { 10 } anyatha { 20 }", 20},
+		{"yadi (1 < 2) { 10 } anyatha { 20 }", 10},
 	}
 
 	for _, test := range tests {
 		evaluated := testEval(test.input)
 		integer, ok := test.expected.(int)
 
-		if !ok {
-			testNullObject(t, evaluated)
-		} else {
+		if ok {
 			testIntegerObject(t, evaluated, int64(integer))
+		} else {
+			testNullObject(t, evaluated)
 		}
 	}
 }
@@ -157,4 +157,20 @@ func testNullObject(t *testing.T, obj object.Object) bool {
 		return false
 	}
 	return true
+}
+
+func TestReturnStatements(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected int64
+	}{
+		{"daan 10;", 10},
+		{"daan 10; 9;", 10},
+		{"daan 2 * 5; 9;", 10},
+		{"9; daan 2 * 5; 9;", 10},
+	}
+	for _, tt := range tests {
+		evaluated := testEval(tt.input)
+		testIntegerObject(t, evaluated, tt.expected)
+	}
 }
