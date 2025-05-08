@@ -144,8 +144,8 @@ func evalIfExpression(ie *ast.IfExpression) object.Object {
 	}
 }
 
-func isTruthy(obj object.Object) bool{
-	switch obj{
+func isTruthy(obj object.Object) bool {
+	switch obj {
 	case NULL:
 		return false
 	case SATYA:
