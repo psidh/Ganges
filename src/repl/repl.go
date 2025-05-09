@@ -6,7 +6,9 @@ import (
 	"io"
 	"strings"
 
+	"github.com/psidh/Ganges/src/eval"
 	"github.com/psidh/Ganges/src/lexer"
+	"github.com/psidh/Ganges/src/object"
 	"github.com/psidh/Ganges/src/parser"
 )
 
@@ -14,6 +16,7 @@ const PROMPT = "वदः >> "
 
 func Start(in io.Reader, out io.Writer) {
 	scanner := bufio.NewScanner(in)
+	env := object.NewEnvironment()
 
 	const SWASTIKA = `
 	..       ..________
@@ -52,6 +55,13 @@ func Start(in io.Reader, out io.Writer) {
 		io.WriteString(out, program.String())
 		io.WriteString(out, "\n")
 
+		evaluated := eval.Eval(program, env)
+
+		if evaluated != nil {
+			io.WriteString(out, evaluated.Inspect())
+			io.WriteString(out, "\n")
+
+		}
 	}
 }
 
