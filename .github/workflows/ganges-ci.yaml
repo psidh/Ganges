@@ -29,3 +29,15 @@ jobs:
             echo "Please run: go fmt ./..."
             exit 1
           fi
+      - name: Lexer Test
+        run: |
+          go test ./src/lexer
+      - name: Parser Test
+        run: |
+          go test ./src/parser
+      - name: AST Test
+        run: |
+          go test ./src/ast
+      - name: Evaluator Test
+        run: |
+          go test ./src/eval
