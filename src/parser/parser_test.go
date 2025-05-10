@@ -682,7 +682,7 @@ func TestCallExpressionParsing(t *testing.T) {
 }
 
 func TestStringLiteralExpression(t *testing.T) {
-	input := `ram lakshman`
+	input := `"ram lakshman"`
 
 	l := lexer.New(input)
 	p := New(l)
@@ -697,7 +697,7 @@ func TestStringLiteralExpression(t *testing.T) {
 		t.Fatalf("exp not *ast.StringLiteral. got=%T", stmt.Expression)
 	}
 
-	if literal.Value != `ram lakshman` {
-		t.Errorf("literal.Value not %q. got=%q", "ram lakshman", literal.Value)
+	if literal.Value != "ram lakshman" {
+		t.Errorf("literal.Value not %q. got=%q", `"ram lakshman"`, literal.Value)
 	}
 }
