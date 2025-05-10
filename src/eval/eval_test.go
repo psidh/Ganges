@@ -308,9 +308,9 @@ func TestStringLiteral(t *testing.T) {
 
 	evaluated := testEval(input)
 	str, ok := evaluated.(*object.String)
-	println("_____________________________");
-	println(str);
-	println("_____________________________");
+	println("_____________________________")
+	println(str)
+	println("_____________________________")
 	if !ok {
 		t.Fatalf("object is not String. got=%T, (%+v)", evaluated, evaluated)
 	}
