@@ -247,3 +247,58 @@ func TestLetStatements(t *testing.T) {
 		testIntegerObject(t, testEval(test.input), test.expected)
 	}
 }
+
+func TestFunctionObject(t *testing.T) {
+	input := "kriya(x) { x + 2;};"
+
+	evaluated := testEval(input)
+
+	kriya, ok := evaluated.(*object.Function)
+
+	if !ok {
+		t.Fatalf("object is not Function. got=%T (%+v)", evaluated, evaluated)
+	}
+
+	if (len(kriya.Parameters)) != 1 {
+		t.Fatalf("function has wrong parameters. Parameters=%+v",
+			kriya.Parameters)
+	}
+	if kriya.Parameters[0].String() != "x" {
+		t.Fatalf("parameter is not 'x'. got=%q", kriya.Parameters[0])
+	}
+
+	expectedBody := "(x + 2)"
+
+	if kriya.Body.String() != expectedBody {
+		t.Fatalf("body is not %q. got=%q", expectedBody, kriya.Body.String())
+	}
+}
+
+func TestFunctionApplication(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected int64
+	}{
+		{"let identity = kriya(x) { x; }; identity(5);", 5},
+		{"let identity = kriya(x) { daan x; }; identity(5);", 5},
+		{"let double = kriya(x) { x * 2; }; double(5);", 10},
+		{"let add = kriya(x, y) { x + y; }; add(5, 5);", 10},
+		{"let add = kriya(x, y) { x + y; }; add(5 + 5, add(5, 5));", 20},
+		{"kriya(x) { x; }(5)", 5},
+	}
+	for _, tt := range tests {
+		testIntegerObject(t, testEval(tt.input), tt.expected)
+	}
+}
+
+func TestClosures(t *testing.T) {
+	input := `
+		let newAdder = kriya(x) {
+		kriya(y) { x + y };
+		};
+		let addTwo = newAdder(2);
+		addTwo(2);
+	`
+
+	testIntegerObject(t, testEval(input), 4)
+}
