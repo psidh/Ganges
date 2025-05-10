@@ -325,7 +325,7 @@ func TestStringLiteral(t *testing.T) {
 }
 
 func TestStringConcatenation(t *testing.T) {
-	input := `"ram + " siya " + ram"`
+	input := `"ram" + " siya " + "ram"`
 
 	evaluated := testEval(input)
 	str, ok := evaluated.(*object.String)
