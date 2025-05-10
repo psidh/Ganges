@@ -302,3 +302,20 @@ func TestClosures(t *testing.T) {
 
 	testIntegerObject(t, testEval(input), 4)
 }
+
+func TestStringLiteral(t *testing.T) {
+	input := `"ram ram"`
+
+	evaluated := testEval(input)
+	str, ok := evaluated.(*object.String)
+	println("_____________________________");
+	println(str);
+	println("_____________________________");
+	if !ok {
+		t.Fatalf("object is not String. got=%T, (%+v)", evaluated, evaluated)
+	}
+
+	if str.Value != "ram ram" {
+		t.Errorf("String has wrong value. got=%q", str.Value)
+	}
+}

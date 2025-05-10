@@ -109,6 +109,11 @@ type InfixExpression struct {
 	Right    Expression
 }
 
+type StringLiteral struct {
+	Token token.Token
+	Value string
+}
+
 func (ls *LetStatement) statementNode()       {}
 func (ls *LetStatement) TokenLiteral() string { return ls.Token.Literal }
 
@@ -219,6 +224,10 @@ func (ce *CallExpression) String() string {
 
 	return out.String()
 }
+
+func (sl *StringLiteral) expressionNode()      {}
+func (sl *StringLiteral) TokenLiteral() string { return sl.Token.Literal }
+func (sl *StringLiteral) String() string       { return sl.Token.Literal }
 
 func (ls *LetStatement) String() string {
 	var out bytes.Buffer

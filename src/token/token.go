@@ -47,6 +47,7 @@ const (
 	YADI    = "YADI"
 	ANYATHA = "ANYATHA"
 	DAAN    = "DAAN"
+	VAKYA   = "VAKYA"
 )
 
 var keywords = map[string]TokenType{

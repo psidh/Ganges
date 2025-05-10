@@ -27,6 +27,8 @@ daan asatya;
 
 10 == 10;
 10 != 9;
+"rām"
+"siya rām"
 `
 
 	tests := []struct {
@@ -106,6 +108,8 @@ daan asatya;
 		{token.NOT_EQ, "!="},
 		{token.INT, "9"},
 		{token.SEMICOLON, ";"},
+		{token.VAKYA, "rām"},
+		{token.VAKYA, "siya rām"},
 		{token.EOF, ""},
 	}
 

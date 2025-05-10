@@ -81,6 +81,10 @@ func (l *Lexer) NextToken() token.Token {
 		} else {
 			tok = newToken(token.ASSIGN, l.ch)
 		}
+	case '"':
+		// tok = token.Token{Type: token.VAKYA, Literal: l.readString()}
+		tok.Type = token.VAKYA
+		tok.Literal = l.readString()
 	case 0:
 		tok = token.Token{Type: token.EOF, Literal: ""}
 	default:
@@ -101,6 +105,19 @@ func (l *Lexer) NextToken() token.Token {
 	return tok
 }
 
+func (l *Lexer) readString() string {
+	position := l.position + 1
+
+	for {
+		l.readChar()
+
+		if l.ch == '"' || l.ch == 0 {
+			break
+		}
+
+	}
+	return l.input[position:l.position]
+}
 func (l *Lexer) readIdentifier() string {
 	position := l.position
 	for isLetter(l.ch) {
