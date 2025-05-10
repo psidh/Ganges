@@ -340,3 +340,38 @@ func TestStringConcatenation(t *testing.T) {
 		t.Errorf("String has wrong value. got=%q", str.Value)
 	}
 }
+
+func TestBuiltinFunctions(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected interface{}
+	}{
+
+		{`dairghya("")`, 0},
+		{`dairghya("four")`, 4},
+		{`dairghya("hello world")`, 11},
+		{`dairghya(1)`, "argument to `dairghya` not supported, got INTEGER"},
+		{`dairghya("one", "two")`, "wrong number of arguments. got=2, want=1"},
+	}
+
+	for _, test := range tests {
+		evaluated := testEval(test.input)
+
+		switch expected := test.expected.(type) {
+
+		case int:
+			testIntegerObject(t, evaluated, int64(expected))
+		case string:
+			errObj, ok := evaluated.(*object.Error)
+
+			if !ok {
+				t.Errorf("object is not Error. got=%T, (%+v)", evaluated, evaluated)
+				continue
+			}
+
+			if errObj.Message != expected {
+				t.Errorf("wrong error message. expected=%q, got=%q", expected, errObj.Message)
+			}
+		}
+	}
+}
