@@ -1,5 +1,9 @@
 #!/bin/bash
 
+echo "Formatting Go Code"
+
+go fmt ./...
+
 echo "Running Lexer Test":
 
 go test ./src/lexer

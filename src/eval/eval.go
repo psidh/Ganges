@@ -268,7 +268,7 @@ func evalIdentifier(node *ast.Identifier, env *object.Environment) object.Object
 }
 
 func applyFunction(fn object.Object, args []object.Object) object.Object {
-	
+
 	switch fn := fn.(type) {
 	case *object.Function:
 		extendedEnv := extendFunctionEnv(fn, args)
