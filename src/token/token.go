@@ -38,6 +38,8 @@ const (
 	RPAREN    = ")"
 	LBRACE    = "{"
 	RBRACE    = "}"
+	LBRACKET  = "["
+	RBRACKET  = "]"
 
 	// Keywords in Sankrit (for the most part)
 	KRIYA   = "KRIYA"

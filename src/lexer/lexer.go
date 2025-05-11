@@ -85,6 +85,10 @@ func (l *Lexer) NextToken() token.Token {
 		// tok = token.Token{Type: token.VAKYA, Literal: l.readString()}
 		tok.Type = token.VAKYA
 		tok.Literal = l.readString()
+	case '[':
+		tok = newToken(token.LBRACKET, l.ch)
+	case ']':
+		tok = newToken(token.RBRACKET, l.ch)
 	case 0:
 		tok = token.Token{Type: token.EOF, Literal: ""}
 	default:
