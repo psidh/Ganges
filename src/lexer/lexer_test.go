@@ -30,6 +30,7 @@ daan asatya;
 "rām"
 "siya rām"
 [1, 2];
+{"foo": "bar"}
 `
 
 	tests := []struct {
@@ -117,6 +118,12 @@ daan asatya;
 		{token.INT, "2"},
 		{token.RBRACKET, "]"},
 		{token.SEMICOLON, ";"},
+		{token.LBRACE, "{"},
+		{token.VAKYA, "foo"},
+		{token.COLON, ":"},
+		{token.VAKYA, "bar"},
+		{token.RBRACE, "}"},
+		{token.EOF, ""},
 		{token.EOF, ""},
 	}
 
