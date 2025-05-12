@@ -448,7 +448,7 @@ func TestArrayIndexExpressions(t *testing.T) {
 
 		integer, ok := test.expected.(int)
 
-		if !ok {
+		if ok {
 			testIntegerObject(t, evaluated, int64(integer))
 		} else {
 			testNullObject(t, evaluated)
