@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"fmt"
 	"io"
-	"strings"
 
 	"github.com/psidh/Ganges/src/eval"
 	"github.com/psidh/Ganges/src/lexer"
@@ -12,26 +11,12 @@ import (
 	"github.com/psidh/Ganges/src/parser"
 )
 
-const PROMPT = "वदः >> "
+const PROMPT = ">> "
 
 func Start(in io.Reader, out io.Writer) {
 	scanner := bufio.NewScanner(in)
 	env := object.NewEnvironment()
 
-	const SWASTIKA = `
-	..       ..________
-	||       ||
-	||       ||
-	||       ||
-	||_______||________
-                 ||      ||
-                 ||      ||
-                 ||      ||
-	_________||      ||
-	`
-
-	// fmt.Println(SWASTIKA)
-	io.WriteString(out, SWASTIKA)
 	for {
 		fmt.Print(PROMPT)
 		scanned := scanner.Scan()
@@ -60,37 +45,13 @@ func Start(in io.Reader, out io.Writer) {
 		if evaluated != nil {
 			io.WriteString(out, evaluated.Inspect())
 			io.WriteString(out, "\n")
-
 		}
 	}
 }
 
 func printParseErrors(out io.Writer, errors []string) {
-	io.WriteString(out, "\nत्रुटियाँ प्राप्त हुईं 👇\n")
+	io.WriteString(out, "\nParser errors:\n")
 	for _, msg := range errors {
-		io.WriteString(out, "\t❗ दोषः: "+translateToShuddhHindi(msg)+"\n")
+		io.WriteString(out, "\t- "+msg+"\n")
 	}
-	io.WriteString(out, "\nकृपया सुधार करके पुनः प्रयास करें।\n")
-}
-
-func translateToShuddhHindi(msg string) string {
-	replacements := map[string]string{
-		"Expected next token to be":    "अगला चिह्न होने की अपेक्षा थी",
-		"instead got":                  "इसके बजाय मिला",
-		"no prefix parse function for": "कोई प्रारंभिक व्याख्या कार्य नहीं मिला",
-		"could not parse":              "व्याख्या करने में असमर्थ",
-		"as integer":                   "पूर्णांक के रूप में",
-	}
-
-	for eng, hindi := range replacements {
-		msg = replaceAllIgnoreCase(msg, eng, hindi)
-	}
-
-	return msg
-}
-
-func replaceAllIgnoreCase(s, old, new string) string {
-	return strings.ReplaceAll(
-		strings.ReplaceAll(s, strings.ToLower(old), new),
-		strings.ToUpper(old), new)
 }
