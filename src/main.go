@@ -20,10 +20,19 @@ import (
 	"os/user"
 	"time"
 
+	"github.com/psidh/Ganges/src/eval"
+	"github.com/psidh/Ganges/src/lexer"
+	"github.com/psidh/Ganges/src/object"
+	"github.com/psidh/Ganges/src/parser"
 	"github.com/psidh/Ganges/src/repl"
 )
 
 func main() {
+	if len(os.Args) == 2 {
+		runFile(os.Args[1])
+		return
+	}
+
 	currentUser, err := user.Current()
 	if err != nil {
 		fmt.Println("Error: Unable to retrieve user information:", err)
@@ -36,10 +45,40 @@ func main() {
 
 	currentTime := time.Now().Format("2006-01-02 15:04:05")
 	fmt.Println("Current session started at:", currentTime)
-
 	fmt.Println("\n✍️ Type your code below:")
 
 	repl.Start(os.Stdin, os.Stdout)
 
 	fmt.Println("\n🌊 Ganges has completed your code execution. Have a productive day!")
+}
+
+func runFile(filename string) {
+	if len(filename) < 3|| filename[len(filename)-3:] != ".ga" {
+		fmt.Printf("❌ Error: Only files with the `.ga` extension are allowed. You provided: %s\n", filename)
+		os.Exit(1)
+	}
+	
+	content, err := os.ReadFile(filename)
+	if err != nil {
+		fmt.Printf("❌ Error reading file '%s': %s\n", filename, err)
+		os.Exit(1)
+	}
+
+	l := lexer.New(string(content))
+	p := parser.New(l)
+	program := p.ParseProgram()
+
+	if len(p.Errors()) != 0 {
+		fmt.Println("🛑 Parser errors:")
+		for _, msg := range p.Errors() {
+			fmt.Println("  -", msg)
+		}
+		os.Exit(1)
+	}
+
+	env := object.NewEnvironment()
+	evaluated := eval.Eval(program, env)
+	if evaluated != nil {
+		fmt.Println("✅ Output:", evaluated.Inspect())
+	}
 }
