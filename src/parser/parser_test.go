@@ -876,3 +876,7 @@ func TestWhileStatement(t *testing.T) {
 		return
 	}
 }
+
+// func TestHashSet(t *testing.T){
+// 	input := `let myset = []`
+// }

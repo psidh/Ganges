@@ -92,4 +92,89 @@ var builtins = map[string]*object.Builtin{
 			return NULL
 		},
 	},
+	"set": &object.Builtin{
+		Fn: func(args ...object.Object) object.Object {
+			s := &object.Set{Elements: make(map[object.HashKey]object.Object)}
+
+			for _, arg := range args {
+				hashable, ok := arg.(object.Hashable)
+				if !ok {
+					return newError("unusable as hash key: %s", arg.Type())
+				}
+
+				key := hashable.HashKey()
+				s.Elements[key] = arg
+			}
+			return s
+		},
+	},
+	"has": &object.Builtin{
+		Fn: func(args ...object.Object) object.Object {
+			if len(args) != 2 {
+				return newError("wrong number of arguments. got=%d, want=2", len(args))
+			}
+
+			setObj, ok := args[0].(*object.Set)
+			if !ok {
+				return newError("first argument must be SET, got %s", args[0].Type())
+			}
+
+			hashable, ok := args[1].(object.Hashable)
+
+			if !ok {
+				return newError("unusable as hash key: %s", args[1].Type())
+			}
+
+			_, exists := setObj.Elements[hashable.HashKey()]
+
+			if exists {
+				return SATYA
+			}
+			return ASATYA
+
+		},
+	},
+	"add": &object.Builtin{
+		Fn: func(args ...object.Object) object.Object {
+
+			if len(args) != 2 {
+				return newError("wrong number of arguments. got=%d, wanted=2", len(args))
+			}
+
+			setObj, ok := args[0].(*object.Set)
+
+			if !ok {
+				return newError("first argument must be SET, got %s", args[0].Type())
+			}
+
+			hashable, ok := args[1].(object.Hashable)
+
+			if !ok {
+				return newError("unusable as hash key: %s", args[1].Type())
+			}
+
+			key := hashable.HashKey()
+
+			setObj.Elements[key] = args[1]
+			return setObj
+		},
+	},
+	"remove": {
+		Fn: func(args ...object.Object) object.Object {
+			if len(args) != 2 {
+				return newError("wrong number of arguments. got=%d, want=2", len(args))
+			}
+			setObj, ok := args[0].(*object.Set)
+			if !ok {
+				return newError("first argument must be SET, got %s", args[0].Type())
+			}
+			hashable, ok := args[1].(object.Hashable)
+			if !ok {
+				return newError("unusable as hash key: %s", args[1].Type())
+			}
+			key := hashable.HashKey()
+			delete(setObj.Elements, key)
+			return setObj
+		},
+	},
 }
