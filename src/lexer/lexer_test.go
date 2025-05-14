@@ -31,8 +31,8 @@ daan asatya;
 "siya rām"
 [1, 2];
 {"foo": "bar"}
-let i = 0;
-while (i <  10){
+ let i = 0;
+while (i < 10) {
 	i = i + 1;
 }
 `

@@ -88,6 +88,8 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		return evalIndexExpression(left, index)
 	case *ast.HashLiteral:
 		return evalHashLiteral(node, env)
+	case *ast.WhileStatement:
+		return evalWhileExpression(node, env)
 	}
 	return NULL
 }
@@ -393,4 +395,18 @@ func evalHashIndexExpression(hash, index object.Object) object.Object {
 		return NULL
 	}
 	return pair.Value
+}
+
+func evalWhileExpression(w *ast.WhileStatement, env *object.Environment) object.Object {
+	condition := Eval(w.Condition, env)
+
+	if isError(condition) {
+		return condition
+	}
+
+	for isTruthy(condition) {
+		Eval(w.Body, env)
+		condition = Eval(w.Condition, env)
+	}
+	return NULL
 }

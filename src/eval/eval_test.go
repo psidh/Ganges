@@ -540,3 +540,17 @@ func TestHashIndexExpressions(t *testing.T) {
 		}
 	}
 }
+
+func TestWhileLoop(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected int64
+	}{
+		{"let x = 0; while(x < 10){ let x = x + 1;} x;", 10},
+	}
+
+	for _, test := range tests {
+		evaluated := testEval(test.input)
+		testIntegerObject(t, evaluated, test.expected)
+	}
+}

@@ -130,6 +130,28 @@ type IndexExpression struct {
 	Index Expression
 }
 
+type WhileStatement struct {
+	Token     token.Token
+	Condition Expression
+	Body      *BlockStatement
+}
+
+func (w *WhileStatement) statementNode()       {}
+func (w *WhileStatement) TokenLiteral() string { return w.Token.Literal }
+func (w *WhileStatement) String() string {
+	var out bytes.Buffer
+
+	out.WriteString("while")
+	out.WriteString("(")
+	out.WriteString(w.Condition.String())
+	out.WriteString(")")
+	out.WriteString("{")
+	out.WriteString(w.Body.String())
+	out.WriteString("}")
+
+	return out.String()
+}
+
 func (ie *IndexExpression) expressionNode()      {}
 func (ie *IndexExpression) TokenLiteral() string { return ie.Token.Literal }
 func (ie *IndexExpression) String() string {
