@@ -53,11 +53,11 @@ func main() {
 }
 
 func runFile(filename string) {
-	if len(filename) < 3|| filename[len(filename)-3:] != ".ga" {
+	if len(filename) < 3 || filename[len(filename)-3:] != ".ga" {
 		fmt.Printf("❌ Error: Only files with the `.ga` extension are allowed. You provided: %s\n", filename)
 		os.Exit(1)
 	}
-	
+
 	content, err := os.ReadFile(filename)
 	if err != nil {
 		fmt.Printf("❌ Error reading file '%s': %s\n", filename, err)
