@@ -82,6 +82,24 @@ type Hashable interface {
 	HashKey() HashKey
 }
 
+type Set struct {
+	Elements map[HashKey]Object
+}
+
+func (s *Set) Type() ObjectType { return SET_OBJ }
+
+func (s *Set) Inspect() string {
+	var out bytes.Buffer
+	elements := []string{}
+	for _, v := range s.Elements {
+		elements = append(elements, v.Inspect())
+	}
+	out.WriteString("set(")
+	out.WriteString(strings.Join(elements, ", "))
+	out.WriteString(")")
+	return out.String()
+}
+
 func (i *Integer) Inspect() string  { return fmt.Sprintf("%d", i.Value) }
 func (i *Integer) Type() ObjectType { return INTEGER_OBJ }
 
@@ -168,4 +186,5 @@ const (
 	BUILTIN_OBJ      = "BUILTIN"
 	ARRAY_OBJ        = "ARRAY"
 	HASH_OBJ         = "HASH"
+	SET_OBJ          = "SET"
 )
