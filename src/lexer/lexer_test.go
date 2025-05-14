@@ -31,6 +31,10 @@ daan asatya;
 "siya rām"
 [1, 2];
 {"foo": "bar"}
+let i = 0;
+while (i <  10){
+	i = i + 1;
+}
 `
 
 	tests := []struct {
@@ -123,7 +127,25 @@ daan asatya;
 		{token.COLON, ":"},
 		{token.VAKYA, "bar"},
 		{token.RBRACE, "}"},
-		{token.EOF, ""},
+		{token.LET, "let"},
+		{token.IDENT, "i"},
+		{token.ASSIGN, "="},
+		{token.INT, "0"},
+		{token.SEMICOLON, ";"},
+		{token.WHILE, "while"},
+		{token.LPAREN, "("},
+		{token.IDENT, "i"},
+		{token.LT, "<"},
+		{token.INT, "10"},
+		{token.RPAREN, ")"},
+		{token.LBRACE, "{"},
+		{token.IDENT, "i"},
+		{token.ASSIGN, "="},
+		{token.IDENT, "i"},
+		{token.PLUS, "+"},
+		{token.INT, "1"},
+		{token.SEMICOLON, ";"},
+		{token.RBRACE, "}"},
 		{token.EOF, ""},
 	}
 

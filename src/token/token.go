@@ -51,6 +51,7 @@ const (
 	ANYATHA = "ANYATHA"
 	DAAN    = "DAAN"
 	VAKYA   = "VAKYA"
+	WHILE   = "WHILE"
 )
 
 var keywords = map[string]TokenType{
@@ -61,6 +62,7 @@ var keywords = map[string]TokenType{
 	"anyatha": ANYATHA,
 	"satya":   SATYA,
 	"asatya":  ASATYA,
+	"while":   WHILE,
 }
 
 func LookupIdent(ident string) TokenType {
