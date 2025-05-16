@@ -100,12 +100,12 @@ func (p *Parser) ParseProgram() *ast.Program {
 
 func (p *Parser) parseStatement() ast.Statement {
 	switch p.currToken.Type {
-	case token.LET:
-		return p.parseLetStatement()
+	case token.RAMA:
+		return p.parseRamaStatement()
 	case token.DAAN:
 		return p.parseReturnStatement()
-	case token.WHILE:
-		return p.parseWhileStatement()
+	case token.CHAKRA:
+		return p.parseChakraStatement()
 	default:
 		return p.parseExpressionStatement()
 	}
@@ -143,8 +143,8 @@ func (p *Parser) parseExpression(precedence int) ast.Expression {
 	return leftExp
 }
 
-func (p *Parser) parseLetStatement() *ast.LetStatement {
-	stmt := &ast.LetStatement{Token: p.currToken}
+func (p *Parser) parseRamaStatement() *ast.RamaStatement {
+	stmt := &ast.RamaStatement{Token: p.currToken}
 
 	if !p.expectPeek(token.IDENT) {
 		return nil
@@ -482,9 +482,9 @@ func (p *Parser) parseHashLiteral() ast.Expression {
 	return hash
 }
 
-func (p *Parser) parseWhileStatement() ast.Statement {
+func (p *Parser) parseChakraStatement() ast.Statement {
 
-	stmt := &ast.WhileStatement{Token: p.currToken}
+	stmt := &ast.ChakraStatement{Token: p.currToken}
 
 	if !p.expectPeek(token.LPAREN) {
 		return nil

@@ -11,12 +11,12 @@ func TestNextToken(t *testing.T) {
 	input :=
 
 		`
-		let five = 5;
-let ten = 10;
-let add = kriya(x, y) {
+		rama five = 5;
+rama ten = 10;
+rama add = kriya(x, y) {
 x + y;
 };
-let result = add(five, ten);
+rama result = add(five, ten);
 !-/*5;
 5 < 10 > 5;
 yadi (5 < 10) {
@@ -31,8 +31,8 @@ daan asatya;
 "siya rām"
 [1, 2];
 {"foo": "bar"}
- let i = 0;
-while (i < 10) {
+ rama i = 0;
+chakra (i < 10) {
 	i = i + 1;
 }
 `
@@ -41,17 +41,17 @@ while (i < 10) {
 		expectedType    token.TokenType
 		expectedLiteral string
 	}{
-		{token.LET, "let"},
+		{token.RAMA, "rama"},
 		{token.IDENT, "five"},
 		{token.ASSIGN, "="},
 		{token.INT, "5"},
 		{token.SEMICOLON, ";"},
-		{token.LET, "let"},
+		{token.RAMA, "rama"},
 		{token.IDENT, "ten"},
 		{token.ASSIGN, "="},
 		{token.INT, "10"},
 		{token.SEMICOLON, ";"},
-		{token.LET, "let"},
+		{token.RAMA, "rama"},
 		{token.IDENT, "add"},
 		{token.ASSIGN, "="},
 		{token.KRIYA, "kriya"},
@@ -67,7 +67,7 @@ while (i < 10) {
 		{token.SEMICOLON, ";"},
 		{token.RBRACE, "}"},
 		{token.SEMICOLON, ";"},
-		{token.LET, "let"},
+		{token.RAMA, "rama"},
 		{token.IDENT, "result"},
 		{token.ASSIGN, "="},
 		{token.IDENT, "add"},
@@ -127,12 +127,12 @@ while (i < 10) {
 		{token.COLON, ":"},
 		{token.VAKYA, "bar"},
 		{token.RBRACE, "}"},
-		{token.LET, "let"},
+		{token.RAMA, "rama"},
 		{token.IDENT, "i"},
 		{token.ASSIGN, "="},
 		{token.INT, "0"},
 		{token.SEMICOLON, ";"},
-		{token.WHILE, "while"},
+		{token.CHAKRA, "chakra"},
 		{token.LPAREN, "("},
 		{token.IDENT, "i"},
 		{token.LT, "<"},

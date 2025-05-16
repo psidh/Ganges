@@ -44,7 +44,7 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 			return val
 		}
 		return &object.ReturnValue{Value: val}
-	case *ast.LetStatement:
+	case *ast.RamaStatement:
 		val := Eval(node.Value, env)
 		if isError(val) {
 			return val
@@ -88,8 +88,8 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		return evalIndexExpression(left, index)
 	case *ast.HashLiteral:
 		return evalHashLiteral(node, env)
-	case *ast.WhileStatement:
-		return evalWhileExpression(node, env)
+	case *ast.ChakraStatement:
+		return evalChakraExpression(node, env)
 	}
 	return NULL
 }
@@ -194,6 +194,10 @@ func evalInfixExpression(left object.Object, operator string, right object.Objec
 	switch {
 	case left.Type() == object.INTEGER_OBJ && right.Type() == object.INTEGER_OBJ:
 		return evalIntegerInfixExpression(operator, left, right)
+	case operator == "==" && left.Type() == object.STRING_OBJ && right.Type() == object.STRING_OBJ:
+		leftVal := left.(*object.String).Value
+		rightVal := right.(*object.String).Value
+		return nativeBoolToBooleanObject(leftVal == rightVal)
 	case operator == "==":
 		return nativeBoolToBooleanObject(left == right)
 	case operator == "!=":
@@ -397,7 +401,7 @@ func evalHashIndexExpression(hash, index object.Object) object.Object {
 	return pair.Value
 }
 
-func evalWhileExpression(w *ast.WhileStatement, env *object.Environment) object.Object {
+func evalChakraExpression(w *ast.ChakraStatement, env *object.Environment) object.Object {
 	condition := Eval(w.Condition, env)
 
 	if isError(condition) {

@@ -50,8 +50,8 @@ type Identifier struct {
 	Value string
 }
 
-type LetStatement struct {
-	Token token.Token // the token.LET token
+type RamaStatement struct {
+	Token token.Token // the token.RAMA token
 	Name  *Identifier
 	Value Expression
 }
@@ -130,18 +130,18 @@ type IndexExpression struct {
 	Index Expression
 }
 
-type WhileStatement struct {
+type ChakraStatement struct {
 	Token     token.Token
 	Condition Expression
 	Body      *BlockStatement
 }
 
-func (w *WhileStatement) statementNode()       {}
-func (w *WhileStatement) TokenLiteral() string { return w.Token.Literal }
-func (w *WhileStatement) String() string {
+func (w *ChakraStatement) statementNode()       {}
+func (w *ChakraStatement) TokenLiteral() string { return w.Token.Literal }
+func (w *ChakraStatement) String() string {
 	var out bytes.Buffer
 
-	out.WriteString("while")
+	out.WriteString("chakra")
 	out.WriteString("(")
 	out.WriteString(w.Condition.String())
 	out.WriteString(")")
@@ -164,8 +164,8 @@ func (ie *IndexExpression) String() string {
 	return out.String()
 }
 
-func (ls *LetStatement) statementNode()       {}
-func (ls *LetStatement) TokenLiteral() string { return ls.Token.Literal }
+func (ls *RamaStatement) statementNode()       {}
+func (ls *RamaStatement) TokenLiteral() string { return ls.Token.Literal }
 
 func (i *Identifier) expressionNode()      {}
 func (i *Identifier) TokenLiteral() string { return i.Token.Literal }
@@ -279,7 +279,7 @@ func (sl *StringLiteral) expressionNode()      {}
 func (sl *StringLiteral) TokenLiteral() string { return sl.Token.Literal }
 func (sl *StringLiteral) String() string       { return sl.Token.Literal }
 
-func (ls *LetStatement) String() string {
+func (ls *RamaStatement) String() string {
 	var out bytes.Buffer
 	out.WriteString(ls.TokenLiteral() + " ")
 	out.WriteString(ls.Name.String())

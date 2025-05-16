@@ -44,25 +44,25 @@ const (
 
 	// Keywords in Sankrit (for the most part)
 	KRIYA   = "KRIYA"
-	LET     = "LET"
+	RAMA    = "RAMA"
 	SATYA   = "SATYA"
 	ASATYA  = "ASATYA"
 	YADI    = "YADI"
 	ANYATHA = "ANYATHA"
 	DAAN    = "DAAN"
 	VAKYA   = "VAKYA"
-	WHILE   = "WHILE"
+	CHAKRA  = "CHAKRA"
 )
 
 var keywords = map[string]TokenType{
 	"kriya":   KRIYA,
-	"let":     LET,
+	"rama":    RAMA,
 	"yadi":    YADI,
 	"daan":    DAAN,
 	"anyatha": ANYATHA,
 	"satya":   SATYA,
 	"asatya":  ASATYA,
-	"while":   WHILE,
+	"chakra":  CHAKRA,
 }
 
 func LookupIdent(ident string) TokenType {

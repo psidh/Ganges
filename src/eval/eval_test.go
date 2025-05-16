@@ -240,15 +240,15 @@ func TestErrorHandling(t *testing.T) {
 	}
 }
 
-func TestLetStatements(t *testing.T) {
+func TestRamaStatements(t *testing.T) {
 	tests := []struct {
 		input    string
 		expected int64
 	}{
-		{"let a = 5; a;", 5},
-		{"let a = 5 * 5; a;", 25},
-		{"let a = 5; let b = a; b;", 5},
-		{"let a = 5; let b = a; let c = a + b + 5; c;", 15},
+		{"rama a = 5; a;", 5},
+		{"rama a = 5 * 5; a;", 25},
+		{"rama a = 5; rama b = a; b;", 5},
+		{"rama a = 5; rama b = a; rama c = a + b + 5; c;", 15},
 	}
 
 	for _, test := range tests {
@@ -287,11 +287,11 @@ func TestFunctionApplication(t *testing.T) {
 		input    string
 		expected int64
 	}{
-		{"let identity = kriya(x) { x; }; identity(5);", 5},
-		{"let identity = kriya(x) { daan x; }; identity(5);", 5},
-		{"let double = kriya(x) { x * 2; }; double(5);", 10},
-		{"let add = kriya(x, y) { x + y; }; add(5, 5);", 10},
-		{"let add = kriya(x, y) { x + y; }; add(5 + 5, add(5, 5));", 20},
+		{"rama identity = kriya(x) { x; }; identity(5);", 5},
+		{"rama identity = kriya(x) { daan x; }; identity(5);", 5},
+		{"rama double = kriya(x) { x * 2; }; double(5);", 10},
+		{"rama add = kriya(x, y) { x + y; }; add(5, 5);", 10},
+		{"rama add = kriya(x, y) { x + y; }; add(5 + 5, add(5, 5));", 20},
 		{"kriya(x) { x; }(5)", 5},
 	}
 	for _, tt := range tests {
@@ -301,10 +301,10 @@ func TestFunctionApplication(t *testing.T) {
 
 func TestClosures(t *testing.T) {
 	input := `
-		let newAdder = kriya(x) {
+		rama newAdder = kriya(x) {
 		kriya(y) { x + y };
 		};
-		let addTwo = newAdder(2);
+		rama addTwo = newAdder(2);
 		addTwo(2);
 	`
 
@@ -418,7 +418,7 @@ func TestArrayIndexExpressions(t *testing.T) {
 			3,
 		},
 		{
-			"let i = 0; [1][i];",
+			"rama i = 0; [1][i];",
 			1,
 		},
 		{
@@ -426,15 +426,15 @@ func TestArrayIndexExpressions(t *testing.T) {
 			3,
 		},
 		{
-			"let myArray = [1, 2, 3]; myArray[2];",
+			"rama myArray = [1, 2, 3]; myArray[2];",
 			3,
 		},
 		{
-			"let myArray = [1, 2, 3]; myArray[0] + myArray[1] + myArray[2];",
+			"rama myArray = [1, 2, 3]; myArray[0] + myArray[1] + myArray[2];",
 			6,
 		},
 		{
-			"let myArray = [1, 2, 3]; let i = myArray[0]; myArray[i]",
+			"rama myArray = [1, 2, 3]; rama i = myArray[0]; myArray[i]",
 			2,
 		},
 		{
@@ -462,7 +462,7 @@ func TestArrayIndexExpressions(t *testing.T) {
 }
 
 func TestHashLiterals(t *testing.T) {
-	input := `let two = "two";
+	input := `rama two = "two";
 {
 "one": 10 - 9,
 two: 1 + 1,
@@ -510,7 +510,7 @@ func TestHashIndexExpressions(t *testing.T) {
 			nil,
 		},
 		{
-			`let key = "foo"; {"foo": 5}[key]`,
+			`rama key = "foo"; {"foo": 5}[key]`,
 			5,
 		},
 		{
@@ -541,12 +541,12 @@ func TestHashIndexExpressions(t *testing.T) {
 	}
 }
 
-func TestWhileLoop(t *testing.T) {
+func TestChakraLoop(t *testing.T) {
 	tests := []struct {
 		input    string
 		expected int64
 	}{
-		{"let x = 0; while(x < 10){ let x = x + 1;} x;", 10},
+		{"rama x = 0; chakra(x < 10){ rama x = x + 1;} x;", 10},
 	}
 
 	for _, test := range tests {
