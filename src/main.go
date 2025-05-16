@@ -118,7 +118,16 @@ func main() {
 
 	handler := cors.Default().Handler(mux) // Enable CORS
 
-	port := "3001"
-	logger.Printf("Server started at http://localhost:%s", port)
-	logger.Fatal(http.ListenAndServe(":"+port, handler))
+	port := os.Getenv("PORT")
+	host := "localhost"
+
+	if port == "" {
+		port = "3001"
+	} else {
+		host = "0.0.0.0" // For Render
+	}
+
+	addr := host + ":" + port
+	logger.Printf("Server started at http://%s", addr)
+	logger.Fatal(http.ListenAndServe(addr, handler))
 }
