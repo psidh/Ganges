@@ -8,15 +8,15 @@ import (
 	"github.com/psidh/Ganges/src/lexer"
 )
 
-func TestLetStatements(t *testing.T) {
+func TestRamaStatements(t *testing.T) {
 	tests := []struct {
 		input              string
 		expectedIdentifier string
 		expectedValue      interface{}
 	}{
-		{"let x = 5;", "x", 5},
-		{"let y = satya;", "y", true},
-		{"let foobar = y;", "foobar", "y"},
+		{"rama x = 5;", "x", 5},
+		{"rama y = satya;", "y", true},
+		{"rama foobar = y;", "foobar", "y"},
 	}
 	for _, tt := range tests {
 
@@ -31,11 +31,11 @@ func TestLetStatements(t *testing.T) {
 		}
 		stmt := program.Statements[0]
 
-		if !testLetStatement(t, stmt, tt.expectedIdentifier) {
+		if !testRamaStatement(t, stmt, tt.expectedIdentifier) {
 			return
 		}
 
-		val := stmt.(*ast.LetStatement).Value
+		val := stmt.(*ast.RamaStatement).Value
 
 		if !testLiteralExpression(t, val, tt.expectedValue) {
 			return
@@ -88,27 +88,27 @@ func checkParserErrors(t *testing.T, p *Parser) {
 	t.FailNow()
 }
 
-func testLetStatement(t *testing.T, s ast.Statement, name string) bool {
-	if s.TokenLiteral() != "let" {
-		t.Errorf("s.TokenLiteral not 'let'. got=%q", s.TokenLiteral())
+func testRamaStatement(t *testing.T, s ast.Statement, name string) bool {
+	if s.TokenLiteral() != "rama" {
+		t.Errorf("s.TokenLiteral not 'rama'. got=%q", s.TokenLiteral())
 		return false
 	}
 
-	// now we got let as a keyword at start
-	letStmt, ok := s.(*ast.LetStatement)
+	// now we got rama as a keyword at start
+	ramaStmt, ok := s.(*ast.RamaStatement)
 
 	if !ok {
-		t.Errorf("s not *ast.LetStatement. got=%T", s)
+		t.Errorf("s not *ast.RamaStatement. got=%T", s)
 		return false
 	}
 
-	if letStmt.Name.Value != name {
-		t.Errorf("letStmt.Name.Value not '%s'. got=%s ", name, letStmt.Name.Value)
+	if ramaStmt.Name.Value != name {
+		t.Errorf("ramaStmt.Name.Value not '%s'. got=%s ", name, ramaStmt.Name.Value)
 		return false
 	}
 
-	if letStmt.Name.TokenLiteral() != name {
-		t.Errorf("s.Name not '%s'. got=%s ", name, letStmt.Name)
+	if ramaStmt.Name.TokenLiteral() != name {
+		t.Errorf("s.Name not '%s'. got=%s ", name, ramaStmt.Name)
 		return false
 	}
 	return true
@@ -840,8 +840,8 @@ func TestParsingHashLiteralsWithExpressions(t *testing.T) {
 	}
 }
 
-func TestWhileStatement(t *testing.T) {
-	input := `while (i < 10) { let i = i + 1 }`
+func TestChakraStatement(t *testing.T) {
+	input := `chakra (i < 10) { rama i = i + 1 }`
 
 	l := lexer.New(input)
 	p := New(l)
@@ -853,10 +853,10 @@ func TestWhileStatement(t *testing.T) {
 			1, len(program.Statements))
 	}
 
-	stmt, ok := program.Statements[0].(*ast.WhileStatement)
+	stmt, ok := program.Statements[0].(*ast.ChakraStatement)
 
 	if !ok {
-		t.Fatalf("program.Statements[0] is not ast.WhileStatement. got=%T", program.Statements[0])
+		t.Fatalf("program.Statements[0] is not ast.ChakraStatement. got=%T", program.Statements[0])
 	}
 
 	if !testInfixExpression(t, stmt.Condition, "i", "<", 10) {
@@ -867,16 +867,12 @@ func TestWhileStatement(t *testing.T) {
 		t.Errorf("body is not 1 statements. got=%d", len(stmt.Body.Statements))
 	}
 
-	body, ok := stmt.Body.Statements[0].(*ast.LetStatement)
+	body, ok := stmt.Body.Statements[0].(*ast.RamaStatement)
 	if !ok {
 		t.Fatalf("Statements[0] is not ast.ExpressionStatement. got=%T", stmt.Body.Statements[0])
 	}
 
-	if !testLetStatement(t, body, "i") {
+	if !testRamaStatement(t, body, "i") {
 		return
 	}
 }
-
-// func TestHashSet(t *testing.T){
-// 	input := `let myset = []`
-// }

@@ -15,70 +15,110 @@
 package main
 
 import (
-	"fmt"
+	"bytes"
+	"encoding/json"
+	"io"
+	"log"
+	"net/http"
 	"os"
-	"os/user"
-	"time"
 
 	"github.com/psidh/Ganges/src/eval"
 	"github.com/psidh/Ganges/src/lexer"
 	"github.com/psidh/Ganges/src/object"
 	"github.com/psidh/Ganges/src/parser"
-	"github.com/psidh/Ganges/src/repl"
+	"github.com/rs/cors"
 )
 
-func main() {
-	if len(os.Args) == 2 {
-		runFile(os.Args[1])
-		return
-	}
-
-	currentUser, err := user.Current()
-	if err != nil {
-		fmt.Println("Error: Unable to retrieve user information:", err)
-		panic(err)
-	}
-
-	fmt.Println("🌊 Welcome to the Ganges Programming Language, " + currentUser.Username + "!")
-	fmt.Println("The Ganges language is designed to empower developers with simplicity and power.")
-	fmt.Println("Feel free to write your code using our expressive syntax, and let the code flow like a river!")
-
-	currentTime := time.Now().Format("2006-01-02 15:04:05")
-	fmt.Println("Current session started at:", currentTime)
-	fmt.Println("\n✍️ Type your code below:")
-
-	repl.Start(os.Stdin, os.Stdout)
-
-	fmt.Println("\n🌊 Ganges has completed your code execution. Have a productive day!")
+type RequestPayload struct {
+	Code string `json:"code"`
 }
 
-func runFile(filename string) {
-	if len(filename) < 3 || filename[len(filename)-3:] != ".ga" {
-		fmt.Printf("❌ Error: Only files with the `.ga` extension are allowed. You provided: %s\n", filename)
-		os.Exit(1)
-	}
+type ResponsePayload struct {
+	Output string `json:"output"`
+}
 
-	content, err := os.ReadFile(filename)
-	if err != nil {
-		fmt.Printf("❌ Error reading file '%s': %s\n", filename, err)
-		os.Exit(1)
-	}
+func executeGangesCode(code string) string {
+	var outputBuffer bytes.Buffer
 
-	l := lexer.New(string(content))
+	// Capture stdout
+	oldStdout := os.Stdout
+	r, w, _ := os.Pipe()
+	os.Stdout = w
+
+	l := lexer.New(code)
 	p := parser.New(l)
 	program := p.ParseProgram()
 
 	if len(p.Errors()) != 0 {
-		fmt.Println("🛑 Parser errors:")
+		w.Close()
+		os.Stdout = oldStdout
+
+		outputBuffer.WriteString("🛑 Parser errors:\n")
 		for _, msg := range p.Errors() {
-			fmt.Println("  -", msg)
+			outputBuffer.WriteString("  - " + msg + "\n")
 		}
-		os.Exit(1)
+		return outputBuffer.String()
 	}
 
 	env := object.NewEnvironment()
 	evaluated := eval.Eval(program, env)
-	if evaluated != nil {
-		fmt.Println("✅ Output:", evaluated.Inspect())
+
+	w.Close()
+
+	var buf bytes.Buffer
+	io.Copy(&buf, r)
+
+	os.Stdout = oldStdout
+
+	capturedOutput := buf.String()
+	if capturedOutput != "" {
+		outputBuffer.WriteString("Console output:\n" + capturedOutput + "\n\n")
 	}
+
+	if evaluated != nil {
+		outputBuffer.WriteString("Result: \n" + evaluated.Inspect())
+		return outputBuffer.String()
+	}
+
+	if capturedOutput == "" {
+		return "✅ Program executed successfully (no output)"
+	}
+
+	return outputBuffer.String()
+}
+
+func codeExecutionHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Only POST method allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	var reqPayload RequestPayload
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&reqPayload); err != nil {
+		http.Error(w, "Invalid JSON payload", http.StatusBadRequest)
+		return
+	}
+
+	output := executeGangesCode(reqPayload.Code)
+
+	respPayload := ResponsePayload{
+		Output: output,
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(respPayload)
+}
+
+func main() {
+	logger := log.New(os.Stdout, "[Ganges Server] ", log.LstdFlags)
+
+	mux := http.NewServeMux()
+	mux.HandleFunc("/execute", codeExecutionHandler)
+
+	handler := cors.Default().Handler(mux) // Enable CORS
+
+	port := "3001"
+	logger.Printf("Server started at http://localhost:%s", port)
+	logger.Fatal(http.ListenAndServe(":"+port, handler))
 }
