@@ -84,7 +84,7 @@ var builtins = map[string]*object.Builtin{
 			return &object.Array{Elements: newElements}
 		},
 	},
-	"print": &object.Builtin{
+	"vadha": &object.Builtin{
 		Fn: func(args ...object.Object) object.Object {
 			for _, arg := range args {
 				fmt.Println(arg.Inspect())

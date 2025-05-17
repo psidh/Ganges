@@ -31,7 +31,7 @@ daan asatya;
 "siya rām"
 [1, 2];
 {"foo": "bar"}
- rama i = 0;
+rama i = 0;
 chakra (i < 10) {
 	i = i + 1;
 }
